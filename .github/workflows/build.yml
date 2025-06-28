@@ -69,5 +69,6 @@ jobs:
         with:
           files: app.aab
           tag_name: v1.0.${{ github.run_number }}
+          allow_existing: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
