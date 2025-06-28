@@ -27,7 +27,7 @@ jobs:
 
       - name: 🧩 Install jq for parsing JSON
         run: sudo apt-get update && sudo apt-get install -y jq
-        
+
       - name: ✅ Debug EAS_ACCESS_TOKEN
         run: echo "EAS_ACCESS_TOKEN is ${{ secrets.EAS_ACCESS_TOKEN }}"
 
@@ -43,7 +43,9 @@ jobs:
         run: |
           echo "✅ Debug build-result.json:"
           cat build-result.json
-          export AAB_URL=$(jq -r '.artifacts.buildUrl // .builds.android.artifactUrl // .[0].artifacts.buildUrl' build-result.json)
+
+          # ✅ FIX: Always index first element in the array
+          export AAB_URL=$(jq -r '.[0].artifacts.buildUrl' build-result.json)
           echo "✅ AAB download URL: $AAB_URL"
 
           curl -L -o app.aab "$AAB_URL"
