@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: write
-  
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: 🟢 Install EAS CLI globally
         run: npm install -g eas-cli
@@ -68,5 +68,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: app.aab
+          tag_name: v1.0.${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
