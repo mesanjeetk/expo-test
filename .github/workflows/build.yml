@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Release AAB
 
 on:
   workflow_dispatch:
@@ -30,20 +30,23 @@ jobs:
         
       - name: ✅ Debug EAS_ACCESS_TOKEN
         run: echo "EAS_ACCESS_TOKEN is ${{ secrets.EAS_ACCESS_TOKEN }}"
-  
-      - name: 🔑 Run EAS Build (Android APK) and get download URL
+
+      - name: 🔑 Run EAS Build (Android AAB) and get download URL
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
           EXPO_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
         run: |
-          eas build -p android --profile preview --non-interactive --json > build-result.json
+          eas build -p android --profile production --non-interactive --json > build-result.json
           cat build-result.json
 
-      - name: 📥 Download APK from Expo cloud build URL
+      - name: 📥 Download AAB from Expo cloud build URL
         run: |
-          export APK_URL=$(jq -r '.builds.android.artifactUrl' build-result.json)
-          echo "APK download URL: $APK_URL"
-          curl -o app.apk "$APK_URL"
+          echo "✅ Debug build-result.json:"
+          cat build-result.json
+          export AAB_URL=$(jq -r '.artifacts.buildUrl // .builds.android.artifactUrl // .[0].artifacts.buildUrl' build-result.json)
+          echo "✅ AAB download URL: $AAB_URL"
+
+          curl -L -o app.aab "$AAB_URL"
 
       - name: 🗂️ Create GitHub Release
         id: create_release
@@ -56,9 +59,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📤 Upload APK to GitHub Release
+      - name: 📤 Upload AAB to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: app.apk
+          files: app.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
