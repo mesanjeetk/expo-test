@@ -27,7 +27,10 @@ jobs:
 
       - name: 🧩 Install jq for parsing JSON
         run: sudo apt-get update && sudo apt-get install -y jq
-
+        
+      - name: ✅ Debug EAS_ACCESS_TOKEN
+        run: echo "EAS_ACCESS_TOKEN is ${{ secrets.EAS_ACCESS_TOKEN }}"
+  
       - name: 🔑 Run EAS Build (Android APK) and get download URL
         env:
           EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
