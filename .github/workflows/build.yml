@@ -47,28 +47,19 @@ jobs:
           echo "✅ Debug build-result.json:"
           cat build-result.json
 
-          # ✅ FIX: Always index first element in the array
+          # ✅ Correct: Index first element in the array
           export AAB_URL=$(jq -r '.[0].artifacts.buildUrl' build-result.json)
           echo "✅ AAB download URL: $AAB_URL"
 
           curl -L -o app.aab "$AAB_URL"
 
-      - name: 🗂️ Create GitHub Release
-        id: create_release
+      - name: 🗂️ Create GitHub Release and Upload AAB
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
           name: "Release v1.0.${{ github.run_number }}"
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📤 Upload AAB to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
           files: app.aab
-          tag_name: v1.0.${{ github.run_number }}
-          allow_existing: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
